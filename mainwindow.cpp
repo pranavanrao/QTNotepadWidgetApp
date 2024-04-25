@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QStatusBar>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -18,9 +17,24 @@ MainWindow::MainWindow(QWidget *parent)
 
     this->m_textEdit = new QTextEdit;
     this->setCentralWidget(m_textEdit);
+
+    connect(ui->actionOpen,
+            &QAction::triggered,
+            this,
+            &MainWindow::openFile);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::openFile()
+{
+    QString fileName = QFileDialog::getOpenFileName();
+    qDebug() << "Open a file" << fileName << Qt::endl;
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    QString data = file.readAll();
+    this->m_textEdit->setPlainText(data);
 }
